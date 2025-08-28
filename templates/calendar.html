@@ -1,48 +1,69 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <div class="calendar-nav">
-        <a href="{{ url_for('show_calendar', year=prev_month_date.year, month=prev_month_date.month) }}">前月</a>
-        <h2>{{ year }}年 {{ month }}月</h2>
-        <a href="{{ url_for('show_calendar', year=next_month_date.year, month=next_month_date.month) }}">次月</a>
-    </div>
-    
-    <div class="calendar-grid">
-        <div class="day-name">日</div>
-        <div class="day-name">月</div>
-        <div class="day-name">火</div>
-        <div class="day-name">水</div>
-        <div class="day-name">木</div>
-        <div class="day-name">金</div>
-        <div class="day-name">土</div>
+    <div class="app-container">
+        <div class="calendar-container">
+            <div class="calendar-nav-centered">
+                <a href="{{ url_for('show_calendar', year=prev_month_date.year, month=prev_month_date.month, selected_date=selected_date.strftime('%Y-%m-%d')) }}">前月</a>
+                <h2>{{ year }}年 {{ month }}月</h2>
+                <a href="{{ url_for('show_calendar', year=next_month_date.year, month=next_month_date.month, selected_date=selected_date.strftime('%Y-%m-%d')) }}">次月</a>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="day-name">日</div>
+                <div class="day-name">月</div>
+                <div class="day-name">火</div>
+                <div class="day-name">水</div>
+                <div class="day-name">木</div>
+                <div class="day-name">金</div>
+                <div class="day-name">土</div>
 
-        {% for week in month_days %}
-            {% for day in week %}
-                {% if day.month == month %}
-                    <div class="day-cell {% if day == today %}today{% endif %}">
-                        <a href="{{ url_for('manage_medicine', date_str=day.strftime('%Y-%m-%d')) }}" class="day-link">
-                            {{ day.day }}
-                        </a>
-                        {% for medicine in calendar_data.get(day, []) %}
-                            <div class="medicine-item-container">
-                                <!-- 服用チェック用のチェックボックス -->
-                                <form action="{{ url_for('toggle_taken') }}" method="post" class="medicine-toggle-form">
-                                    <input type="hidden" name="medicine_id" value="{{ medicine.id }}">
-                                    <input type="hidden" name="date" value="{{ day.strftime('%Y-%m-%d') }}">
-                                    <input type="checkbox" class="medicine-checkbox" {% if medicine.is_taken %}checked{% endif %}>
-                                </form>
-                                <!-- 薬の編集・削除用のリンク -->
-                                <a href="{{ url_for('manage_medicine', date_str=day.strftime('%Y-%m-%d'), medicine_id=medicine.id) }}" class="medicine-link {% if medicine.is_taken %}taken{% endif %}">
-                                    {{ medicine.name }}
-                                </a>
+                {% for week in month_days %}
+                    {% for day in week %}
+                        {% if day.month == month %}
+                            <div class="day-cell {% if day == today %}today{% endif %} {% if day == selected_date %}selected{% endif %}" data-date="{{ day.strftime('%Y-%m-%d') }}">
+                                <div class="day-link">
+                                    {{ day.day }}
+                                </div>
+                                {% for medicine in calendar_data.get(day, []) %}
+                                    <form action="{{ url_for('toggle_taken') }}" method="post" class="medicine-form">
+                                        <input type="hidden" name="medicine_id" value="{{ medicine.id }}">
+                                        <input type="hidden" name="date" value="{{ day.strftime('%Y-%m-%d') }}">
+                                        <button type="submit" class="medicine-item {% if medicine.is_taken %}taken{% endif %}">
+                                            {{ medicine.name }}
+                                        </button>
+                                    </form>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="day-cell other-month"></div>
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    </div>
+                        {% else %}
+                            <div class="day-cell other-month"></div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
 
+        <div class="manage-container">
+            <div id="manage-section-container">
+                <!-- ここに登録・編集画面のコンテンツが動的に読み込まれます -->
+                <div id="medicine-list-view">
+                    <h3>{{ selected_date.strftime('%Y年%m月%d日') }}の登録済み薬</h3>
+                    {% if medicines_for_day %}
+                    <ul>
+                        {% for m in medicines_for_day %}
+                        <li>
+                            <a href="#" class="edit-medicine-link" data-medicine-id="{{ m.id }}" data-date="{{ selected_date.strftime('%Y-%m-%d') }}">
+                                {{ m.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>この日に登録された薬はありません。</p>
+                    {% endif %}
+                    <button id="new-medicine-btn" class="btn btn-primary" data-date="{{ selected_date.strftime('%Y-%m-%d') }}">新規登録</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="notification-area"></div>
 {% endblock %}

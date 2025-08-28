@@ -48,6 +48,8 @@ def show_calendar():
     today = datetime.date.today()
     year = int(request.args.get('year', today.year))
     month = int(request.args.get('month', today.month))
+    selected_date_str = request.args.get('selected_date', today.strftime('%Y-%m-%d'))
+    selected_date = datetime.datetime.strptime(selected_date_str, '%Y-%m-%d').date()
 
     cal = calendar.Calendar()
     month_days = cal.monthdatescalendar(year, month)
@@ -88,6 +90,12 @@ def show_calendar():
                         })
                 calendar_data[day] = day_data
     
+    # 選択した日の薬リストを取得
+    medicines_for_day = session.query(Medicine).filter(
+        Medicine.start_date <= selected_date,
+        Medicine.end_date >= selected_date
+    ).all()
+    
     return render_template(
         'calendar.html',
         year=year,
@@ -96,20 +104,44 @@ def show_calendar():
         prev_month_date=prev_month_date,
         next_month_date=next_month_date,
         calendar_data=calendar_data,
-        today=today
+        today=today,
+        selected_date=selected_date,
+        medicines_for_day=medicines_for_day,
     )
 
-# 薬の登録・編集ページ
-@app.route('/medicine/<date_str>', methods=['GET', 'POST'])
-@app.route('/medicine/<date_str>/<int:medicine_id>', methods=['GET', 'POST'])
-def manage_medicine(date_str, medicine_id=None):
+# 薬の登録・編集ページのコンテンツを返す
+@app.route('/medicine_manage_content', methods=['GET'])
+def get_medicine_manage_content():
+    date_str = request.args.get('date_str')
+    medicine_id = request.args.get('medicine_id', type=int)
+    
     record_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
     medicine = None
     if medicine_id:
         medicine = session.query(Medicine).filter_by(id=medicine_id).first()
+    
+    # 選択した日の薬リストを取得
+    medicines_for_day = session.query(Medicine).filter(
+        Medicine.start_date <= record_date,
+        Medicine.end_date >= record_date
+    ).all()
+    
+    html = render_template('medicine_form.html', medicine=medicine, record_date=record_date, medicines_for_day=medicines_for_day)
+    return html
 
-    if request.method == 'POST':
-        action = request.form.get('action')
+# 薬の登録・編集・削除処理
+@app.route('/medicine_manage', methods=['POST'])
+def manage_medicine():
+    action = request.form.get('action')
+    date_str = request.form.get('date')
+    medicine_id = request.form.get('medicine_id', type=int)
+
+    record_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+    medicine = None
+    if medicine_id:
+        medicine = session.query(Medicine).filter_by(id=medicine_id).first()
+    
+    if action == 'save':
         name = request.form.get('name')
         start_date_str = request.form.get('start_date')
         end_date_str = request.form.get('end_date')
@@ -121,39 +153,37 @@ def manage_medicine(date_str, medicine_id=None):
         end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d').date()
         take_time = datetime.datetime.strptime(take_time_str, '%H:%M').time()
 
-        if action == 'save':
-            if medicine_id:
-                # 編集
-                medicine.name = name
-                medicine.start_date = start_date
-                medicine.end_date = end_date
-                medicine.take_time = take_time
-                medicine.dosage = dosage
-                medicine.notes = notes
-                session.commit()
-            else:
-                # 新規登録
-                new_medicine = Medicine(
-                    name=name,
-                    start_date=start_date,
-                    end_date=end_date,
-                    take_time=take_time,
-                    dosage=dosage,
-                    notes=notes
-                )
-                session.add(new_medicine)
-                session.commit()
-        elif action == 'delete':
-            # 削除
-            if medicine:
-                session.delete(medicine)
-                session.commit()
-        
-        return redirect(url_for('show_calendar'))
+        if medicine_id:
+            # 編集
+            medicine.name = name
+            medicine.start_date = start_date
+            medicine.end_date = end_date
+            medicine.take_time = take_time
+            medicine.dosage = dosage
+            medicine.notes = notes
+            session.commit()
+        else:
+            # 新規登録
+            new_medicine = Medicine(
+                name=name,
+                start_date=start_date,
+                end_date=end_date,
+                take_time=take_time,
+                dosage=dosage,
+                notes=notes
+            )
+            session.add(new_medicine)
+            session.commit()
+    elif action == 'delete':
+        # 削除
+        if medicine:
+            session.delete(medicine)
+            session.commit()
+    
+    return redirect(url_for('show_calendar', year=record_date.year, month=record_date.month, selected_date=record_date.strftime('%Y-%m-%d')))
 
-    return render_template('medicine_form.html', medicine=medicine, record_date=record_date)
 
-# 服用記録の更新（JavaScriptを使わない動的処理）
+# 服用記録の更新
 @app.route('/toggle_taken', methods=['POST'])
 def toggle_taken():
     medicine_id = request.form.get('medicine_id', type=int)
