@@ -1,0 +1,212 @@
+/* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    padding: 2em;
+    max-width: 900px;
+    margin: 2em auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    padding: 1em 0;
+    color: #777;
+    font-size: 0.9em;
+}
+
+/* カレンダーのスタイル */
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.calendar-nav h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #4CAF50;
+}
+
+.calendar-nav a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.day-name, .day-cell {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.day-name {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.day-cell {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+}
+
+.other-month {
+    background-color: #f9f9f9;
+}
+
+.day-link {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #555;
+    text-decoration: none;
+    align-self: flex-start;
+}
+
+.today {
+    background-color: #e0f2f1;
+    border: 2px solid #4CAF50;
+}
+
+.medicine-item {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+.medicine-item.taken {
+    background-color: #8BC34A; /* 服用済みの色 */
+    text-decoration: line-through;
+}
+
+.medicine-form {
+    margin: 0;
+    width: 100%;
+}
+
+.notification-area {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* 初期状態では非表示 */
+}
+
+/* 薬の登録フォームのスタイル */
+.form-container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #fff;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 1em;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5em;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #da190b;
+}
+
+.btn-back {
+    background-color: #ddd;
+    color: #333;
+}
+
+.btn-back:hover {
+    background-color: #ccc;
+}

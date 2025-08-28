@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="calendar-nav">
+        <a href="{{ url_for('show_calendar', year=prev_month_date.year, month=prev_month_date.month) }}">前月</a>
+        <h2>{{ year }}年 {{ month }}月</h2>
+        <a href="{{ url_for('show_calendar', year=next_month_date.year, month=next_month_date.month) }}">次月</a>
+    </div>
+    
+    <div class="calendar-grid">
+        <div class="day-name">日</div>
+        <div class="day-name">月</div>
+        <div class="day-name">火</div>
+        <div class="day-name">水</div>
+        <div class="day-name">木</div>
+        <div class="day-name">金</div>
+        <div class="day-name">土</div>
+
+        {% for week in month_days %}
+            {% for day in week %}
+                {% if day.month == month %}
+                    <div class="day-cell {% if day == today %}today{% endif %}">
+                        <a href="{{ url_for('manage_medicine', date_str=day.strftime('%Y-%m-%d')) }}" class="day-link">
+                            {{ day.day }}
+                        </a>
+                        {% for medicine in calendar_data.get(day, []) %}
+                            <div class="medicine-item-container">
+                                <!-- 服用チェック用のチェックボックス -->
+                                <form action="{{ url_for('toggle_taken') }}" method="post" class="medicine-toggle-form">
+                                    <input type="hidden" name="medicine_id" value="{{ medicine.id }}">
+                                    <input type="hidden" name="date" value="{{ day.strftime('%Y-%m-%d') }}">
+                                    <input type="checkbox" class="medicine-checkbox" {% if medicine.is_taken %}checked{% endif %}>
+                                </form>
+                                <!-- 薬の編集・削除用のリンク -->
+                                <a href="{{ url_for('manage_medicine', date_str=day.strftime('%Y-%m-%d'), medicine_id=medicine.id) }}" class="medicine-link {% if medicine.is_taken %}taken{% endif %}">
+                                    {{ medicine.name }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="day-cell other-month"></div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="notification-area"></div>
+{% endblock %}

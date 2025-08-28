@@ -1,0 +1,3 @@
+Flask
+SQLAlchemy
+psycopg2-binary  # RenderでPostgreSQLを使う場合

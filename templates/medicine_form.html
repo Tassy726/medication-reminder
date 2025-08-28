@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="form-container">
+        <h2>{% if medicine %}薬の編集・削除{% else %}薬の登録{% endif %}</h2>
+        <form action="{% if medicine %}{{ url_for('manage_medicine', date_str=record_date.strftime('%Y-%m-%d'), medicine_id=medicine.id) }}{% else %}{{ url_for('manage_medicine', date_str=record_date.strftime('%Y-%m-%d')) }}{% endif %}" method="post">
+            <div class="form-group">
+                <label for="name">薬名:</label>
+                <input type="text" id="name" name="name" value="{{ medicine.name if medicine else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="start_date">服用開始日:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ medicine.start_date.strftime('%Y-%m-%d') if medicine else record_date.strftime('%Y-%m-%d') }}" required>
+            </div>
+            <div class="form-group">
+                <label for="end_date">服用終了日:</label>
+                <input type="date" id="end_date" name="end_date" value="{{ medicine.end_date.strftime('%Y-%m-%d') if medicine else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="take_time">服用時間:</label>
+                <input type="time" id="take_time" name="take_time" value="{{ medicine.take_time.strftime('%H:%M') if medicine else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="dosage">何錠服用:</label>
+                <input type="text" id="dosage" name="dosage" value="{{ medicine.dosage if medicine else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="notes">備考:</label>
+                <textarea id="notes" name="notes" rows="4">{{ medicine.notes if medicine else '' }}</textarea>
+            </div>
+            
+            <div class="form-actions">
+                <a href="{{ url_for('show_calendar') }}" class="btn btn-back">戻る</a>
+                <input type="hidden" name="action" value="save">
+                <button type="submit" class="btn btn-primary">{% if medicine %}編集{% else %}登録{% endif %}</button>
+                {% if medicine %}
+                <button type="submit" class="btn btn-danger" onclick="document.forms[0].action.value='delete'; return confirm('本当に削除しますか？');">削除</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}
