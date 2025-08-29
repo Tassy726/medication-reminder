@@ -28,7 +28,7 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 2. 依存ライブラリのインストール
-requirements.txt に記載されている必要なライブラリをインストールします。
+`requirements.txt` に記載されている必要なライブラリをインストールします。
 ```
 pip install -r requirements.txt
 ```
@@ -38,6 +38,7 @@ pip install -r requirements.txt
 python app.py
 ```
 ※VSCodeの場合、エクスプローラーでapp.pyを選択して「実行」でもOK！
+
 
 サーバーが起動したら、ブラウザで http://127.0.0.1:5000 にアクセスしてください。
 
