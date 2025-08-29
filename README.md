@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ```
 python app.py
 ```
-※VSCodeの場合、エクスプローラーでapp.pyを選択して「実行」でもOK！
+※VSCodeの場合、エクスプローラーで`app.py`を選択して「実行」でもOK！
 
 
 サーバーが起動したら、ブラウザで http://127.0.0.1:5000 にアクセスしてください。
