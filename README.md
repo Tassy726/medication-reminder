@@ -17,7 +17,7 @@
 
 1. 仮想環境の構築
 プロジェクトのルートディレクトリで、以下のコマンドを実行して仮想環境を作成し、有効化します。
-'''
+```
 # 仮想環境を作成
 python -m venv venv
 
@@ -26,21 +26,21 @@ venv\Scripts\activate
 
 # 仮想環境を有効化 (macOS/Linux)
 source venv/bin/activate
-'''
+```
 2. 依存ライブラリのインストール
 requirements.txt に記載されている必要なライブラリをインストールします。
-'''
+```
 pip install -r requirements.txt
-'''
+```
 3. アプリケーションの実行
 以下のコマンドでアプリケーションを起動します。
-'''
+```
 python app.py
-'''
+```
 サーバーが起動したら、ブラウザで http://127.0.0.1:5000 にアクセスしてください。
 
 ファイル構成
-'''
+```
 .
 ├── .gitignore             # Gitのバージョン管理から除外するファイルを指定
 ├── app.py                 # Flaskアプリケーションのメインファイル
@@ -57,6 +57,7 @@ python app.py
     │   └── script.js      # フロントエンドのJavaScript
     └── sounds/
         └── alarm.mp3      # 通知音
-'''
+```
+
 ライセンス
 このプロジェクトは、MIT Licenseのもとで公開されています。
