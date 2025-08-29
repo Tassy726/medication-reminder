@@ -1,58 +1,49 @@
-<div class="form-container" style="display: {% if medicine or request.args.get('new') %}block{% else %}none{% endif %};">
-    <h2>{% if medicine %}薬の編集・削除{% else %}薬の登録{% endif %}</h2>
-    <form id="medicine-manage-form" action="{{ url_for('manage_medicine') }}" method="post">
-        <input type="hidden" name="action" value="save">
-        <input type="hidden" name="medicine_id" value="{{ medicine.id if medicine else '' }}">
-        <input type="hidden" name="date" value="{{ record_date.strftime('%Y-%m-%d') }}">
+<div class="form-container">
+    <h2>{% if medicine %}薬の編集{% else %}薬の新規登録{% endif %}</h2>
+    <form id="medicine-form" class="medicine-form" action="/manage_medicine" method="post">
+        <input type="hidden" name="date" value="{{ date }}">
+        {% if medicine %}
+        <input type="hidden" name="id" value="{{ medicine.id }}">
+        {% endif %}
 
         <div class="form-group">
             <label for="name">薬名:</label>
-            <input type="text" id="name" name="name" value="{{ medicine.name if medicine else '' }}" required>
+            <input type="text" id="name" name="name" value="{% if medicine %}{{ medicine.name }}{% endif %}" required>
         </div>
+
         <div class="form-group">
             <label for="start_date">服用開始日:</label>
-            <input type="date" id="start_date" name="start_date" value="{{ medicine.start_date.strftime('%Y-%m-%d') if medicine else record_date.strftime('%Y-%m-%d') }}" required>
+            <input type="date" id="start_date" name="start_date" value="{% if medicine %}{{ medicine.start_date }}{% else %}{{ date }}{% endif %}" required>
         </div>
+
         <div class="form-group">
             <label for="end_date">服用終了日:</label>
-            <input type="date" id="end_date" name="end_date" value="{{ medicine.end_date.strftime('%Y-%m-%d') if medicine else '' }}" required>
+            <input type="date" id="end_date" name="end_date" value="{% if medicine %}{{ medicine.end_date }}{% endif %}">
         </div>
+
         <div class="form-group">
-            <label for="take_time">服用時間:</label>
-            <input type="time" id="take_time" name="take_time" value="{{ medicine.take_time.strftime('%H:%M') if medicine else '' }}" required>
+            <label for="time">服用時間:</label>
+            <input type="time" id="time" name="time" value="{% if medicine %}{{ medicine.time }}{% endif %}" required>
         </div>
+
         <div class="form-group">
-            <label for="dosage">何錠服用:</label>
-            <input type="text" id="dosage" name="dosage" value="{{ medicine.dosage if medicine else '' }}" required>
+            <label for="dose">服用量:</label>
+            <input type="text" id="dose" name="dose" value="{% if medicine %}{{ medicine.dose }}{% endif %}">
         </div>
+
         <div class="form-group">
             <label for="notes">備考:</label>
-            <textarea id="notes" name="notes" rows="4">{{ medicine.notes if medicine else '' }}</textarea>
+            <textarea id="notes" name="notes">{% if medicine %}{{ medicine.notes }}{% endif %}</textarea>
         </div>
-        
+
         <div class="form-actions">
-            <button type="button" class="btn btn-back" id="form-cancel-btn">キャンセル</button>
-            <button type="submit" class="btn btn-primary">{% if medicine %}編集{% else %}登録{% endif %}</button>
             {% if medicine %}
-            <button type="submit" class="btn btn-danger" onclick="document.getElementById('medicine-manage-form').action.value='delete'; return confirm('本当に削除しますか？');">削除</button>
+            <button type="button" class="btn btn-danger" onclick="deleteMedicine()">削除</button>
+            {% else %}
+            <div></div>
             {% endif %}
+            <button type="button" class="btn btn-back" onclick="showListView()">キャンセル</button>
+            <button type="submit" class="btn btn-primary">{% if medicine %}編集{% else %}登録{% endif %}</button>
         </div>
     </form>
-</div>
-<div id="medicine-list-view">
-    <h3>{{ record_date.strftime('%Y年%m月%d日') }}の登録済み薬</h3>
-    {% if medicines_for_day %}
-    <ul>
-        {% for m in medicines_for_day %}
-        <li>
-            <a href="#" class="edit-medicine-link" data-medicine-id="{{ m.id }}" data-date="{{ record_date.strftime('%Y-%m-%d') }}">
-                {{ m.name }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>この日に登録された薬はありません。</p>
-    {% endif %}
-    <button id="new-medicine-btn" class="btn btn-primary" data-date="{{ record_date.strftime('%Y-%m-%d') }}">新規登録</button>
 </div>
