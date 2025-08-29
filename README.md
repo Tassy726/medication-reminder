@@ -12,6 +12,26 @@
 * データベース: SQLite
 * フロントエンド: HTML, CSS, JavaScript
 
+# ファイル構成
+```
+.
+├── .gitignore             # Gitのバージョン管理から除外するファイルを指定
+├── app.py                 # Flaskアプリケーションのメインファイル
+├── database.py            # データベース接続とモデルの定義
+├── requirements.txt       # プロジェクトの依存ライブラリ一覧
+├── templates/
+│   ├── layout.html        # 全ページの基本レイアウト
+│   ├── calendar.html      # カレンダー表示ページ
+│   └── medicine_form.html # 薬の登録・編集フォーム
+└── static/
+    ├── css/
+    │   └── style.css      # スタイルシート
+    ├── js/
+    │   └── script.js      # フロントエンドのJavaScript
+    └── sounds/
+        └── alarm.mp3      # 通知音
+```
+
 # セットアップ方法
 以下の手順に従って、ローカル環境でアプリケーションをセットアップおよび実行できます。
 
@@ -42,25 +62,6 @@ python app.py
 
 サーバーが起動したら、ブラウザで http://127.0.0.1:5000 にアクセスしてください。
 
-ファイル構成
-```
-.
-├── .gitignore             # Gitのバージョン管理から除外するファイルを指定
-├── app.py                 # Flaskアプリケーションのメインファイル
-├── database.py            # データベース接続とモデルの定義
-├── requirements.txt       # プロジェクトの依存ライブラリ一覧
-├── templates/
-│   ├── layout.html        # 全ページの基本レイアウト
-│   ├── calendar.html      # カレンダー表示ページ
-│   └── medicine_form.html # 薬の登録・編集フォーム
-└── static/
-    ├── css/
-    │   └── style.css      # スタイルシート
-    ├── js/
-    │   └── script.js      # フロントエンドのJavaScript
-    └── sounds/
-        └── alarm.mp3      # 通知音
-```
 
-ライセンス
+# ライセンス
 このプロジェクトは、[MIT License](https://opensource.org/license/MIT)　のもとで公開されています。
