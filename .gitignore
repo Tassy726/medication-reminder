@@ -11,3 +11,6 @@ medicines.db
 
 # Environment variables
 .env
+
+# database
+medicines.db
